@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -14,11 +14,21 @@ import {
   Switch,
 } from "@heroui/react";
 
+// Static snapshot subscribe helper for server boundaries
+const emptySubscribe = () => () => {};
+
 export default function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // Natively determines if execution context is client-bound without triggering side-effect lint rules
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,  // Read on client browser execution
+    () => false  // Read on Server Side Rendering phase
+  );
 
   // Helper to determine if a route link is currently active
   const isActive = (path) => pathname === path || (path !== "/" && pathname.startsWith(path));
@@ -53,8 +63,6 @@ export default function Navbar() {
           >
             All Tickets
           </Link>
-          
-          {/* Dashboard is structurally private, always accessible but view depends on auth */}
           <Link 
             href="/dashboard/profile" 
             className={`text-sm font-medium transition-colors ${
@@ -68,10 +76,10 @@ export default function Navbar() {
         {/* ── Column 3: Actions & Auth Configuration ── */}
         <div className="flex items-center gap-4">
           
-          {/* Challenge Element: Dark/Light Mode Switch */}
+          {/* Hydration-Protected Dark/Light Mode Switch without active effects */}
           <Switch
             size="sm"
-            isSelected={theme === "dark"}
+            isSelected={isClient ? theme === "dark" : true}
             onValueChange={(isSelected) => setTheme(isSelected ? "dark" : "light")}
             aria-label="Toggle theme color"
           />
