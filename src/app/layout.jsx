@@ -1,5 +1,5 @@
 import Providers from "@/providers/Providers";
-import "./globals.css";
+import "./globals.css"; // Ensure Tailwind v4 is imported here globally!
 
 export const metadata = {
   title: "TicketBari | Online Ticket Booking Platform",
@@ -9,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-background text-foreground antialiased">
+      <body className="bg-navy-900 text-white antialiased">
         <Providers>
           {children}
         </Providers>
