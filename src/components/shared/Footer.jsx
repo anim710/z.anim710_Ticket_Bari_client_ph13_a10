@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bus } from "@gravity-ui/icons";
+import { Car } from "@gravity-ui/icons";
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
         {/* Column 1: Logo */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Bus className="text-blue-500 w-5 h-5" />
+            <Car className="text-blue-500 w-5 h-5" />
             <span className="font-bold text-lg text-white">
               Ticket<span className="text-blue-500">Bari</span>
             </span>
