@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* ── HeroUI plugin ─────────────────────────────────────── */
-@plugin "@heroui/theme";
+/* ── HeroUI Native v4 Style Import ───────────────────────── */
+@import "@heroui/styles";
 
 /* ── Custom color tokens ───────────────────────────────── */
 @theme {
