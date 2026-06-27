@@ -1,212 +1,204 @@
 "use client";
-import { useState, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useSession, signOut } from "@/lib/auth-client";
-import { Car } from "@gravity-ui/icons";
-
-// ── Only import valid HeroUI v3 core primitives ──
+import { useRole } from "@/hooks/useRole";
 import {
-  Avatar,
-  Dropdown,
-  Button,
-  Switch,
+  Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
 } from "@heroui/react";
 
-// Static snapshot subscribe helper for server boundaries
-const emptySubscribe = () => () => {};
-
-export default function Navbar() {
+export default function AppNavbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted]   = useState(false);
+  const { user, role, logout }  = useRole();
+  const { theme, setTheme }     = useTheme();
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
-  const { data: session } = useSession();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  // Natively determines if execution context is client-bound without triggering side-effect lint rules
-  const isClient = useSyncExternalStore(
-    emptySubscribe,
-    () => true,  // Read on client browser execution
-    () => false  // Read on Server Side Rendering phase
-  );
 
-  // Helper to determine if a route link is currently active
-  const isActive = (path) => pathname === path || (path !== "/" && pathname.startsWith(path));
+  // Avoid hydration mismatch with theme
+  useEffect(() => setMounted(true), []);
+
+  const navLinks = [
+    { label: "Home",        href: "/" },
+    { label: "All Tickets", href: "/tickets" },
+    ...(user ? [{ label: "Dashboard", href: "/dashboard/profile" }] : []),
+  ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-navy-800 bg-navy-900/80 backdrop-blur-md transition-colors duration-300">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        
-        {/* ── Column 1: Logo ── */}
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-            <Car className="h-6 w-6 text-accent animate-pulse" />
-            <span>Ticket<span className="text-accent">Bari</span></span>
-          </Link>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900
+                    border-b border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+
+        {/* ── Logo ───────────────────────────────────────────── */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <span className="text-2xl">🚌</span>
+          <span className="font-bold text-xl text-white">
+            Ticket<span className="text-blue-500">Bari</span>
+          </span>
+        </Link>
+
+        {/* ── Desktop nav links ───────────────────────────────── */}
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-sm font-medium transition-colors ${
+                pathname === link.href
+                  ? "text-blue-400"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
 
-        {/* ── Column 2: Nav Items (Desktop Navigation) ── */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link 
-            href="/" 
-            className={`text-sm font-medium transition-colors ${
-              isActive("/") ? "text-accent font-semibold" : "text-slate-300 hover:text-white"
-            }`}
-          >
-            Home
-          </Link>
-          <Link 
-            href="/tickets" 
-            className={`text-sm font-medium transition-colors ${
-              isActive("/tickets") ? "text-accent font-semibold" : "text-slate-300 hover:text-white"
-            }`}
-          >
-            All Tickets
-          </Link>
-          <Link 
-            href="/dashboard/profile" 
-            className={`text-sm font-medium transition-colors ${
-              isActive("/dashboard") ? "text-accent font-semibold" : "text-slate-300 hover:text-white"
-            }`}
-          >
-            Dashboard
-          </Link>
-        </nav>
+        {/* ── Right side ──────────────────────────────────────── */}
+        <div className="flex items-center gap-3">
 
-        {/* ── Column 3: Actions & Auth Configuration ── */}
-        <div className="flex items-center gap-4">
-          
-          {/* Hydration-Protected Dark/Light Mode Switch without active effects */}
-          <Switch
-            size="sm"
-            isSelected={isClient ? theme === "dark" : true}
-            onValueChange={(isSelected) => setTheme(isSelected ? "dark" : "light")}
-            aria-label="Toggle theme color"
-          />
+          {/* Dark/Light toggle */}
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700
+                         text-slate-300 transition-colors text-sm"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? "☀️" : "🌙"}
+            </button>
+          )}
 
-          {session?.user ? (
-            /* Logged In State: Dropdown Portal Menu */
+          {/* Auth: logged in */}
+          {user ? (
             <Dropdown placement="bottom-end">
-              <Dropdown.Trigger>
-                <button className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-accent/50 rounded-full p-0.5">
-                  <Avatar 
-                    src={session.user.image || undefined} 
-                    name={session.user.name || "User"} 
-                    size="sm" 
-                    className="cursor-pointer border border-accent/20" 
-                  />
-                  <span className="hidden lg:inline text-sm font-medium text-slate-200">
-                    {session.user.name}
+              <DropdownTrigger>
+                <button className="flex items-center gap-2 bg-slate-800
+                                   hover:bg-slate-700 rounded-full px-2 py-1
+                                   transition-colors">
+                  {/* Avatar */}
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center
+                                  justify-center text-white text-sm font-bold overflow-hidden">
+                    {user.image ? (
+                      <img src={user.image} alt={user.name}
+                           className="w-full h-full object-cover" />
+                    ) : (
+                      user.name?.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <span className="text-slate-300 text-sm hidden sm:block max-w-24 truncate">
+                    {user.name?.split(" ")[0]}
                   </span>
                 </button>
-              </Dropdown.Trigger>
-              <Dropdown.Portal>
-                <Dropdown.Content 
-                  presentation="popover" 
-                  className="w-48 bg-navy-800 border border-navy-700 shadow-xl rounded-xl p-1.5 backdrop-blur-md animate-in fade-in zoom-in-95 duration-100"
+              </DropdownTrigger>
+
+              <DropdownMenu
+                className="bg-slate-800 border border-slate-700 rounded-xl
+                           shadow-xl p-1 min-w-48"
+              >
+                <DropdownItem
+                  key="info"
+                  isReadOnly
+                  className="text-slate-400 text-xs px-3 py-2 cursor-default"
                 >
-                  <Dropdown.Item id="user-details" className="px-3 py-2 border-b border-navy-700/50 pointer-events-none mb-1">
-                    <p className="text-xs text-slate-400 font-normal">Logged in as</p>
-                    <p className="text-sm text-white font-semibold truncate">{session.user.name}</p>
-                  </Dropdown.Item>
-                  <Dropdown.Item id="profile-link" className="w-full">
-                    <Link href="/dashboard/profile" className="block text-slate-200 hover:text-white w-full h-full px-3 py-2 rounded-lg transition-colors hover:bg-navy-700">
-                      My Profile
-                    </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item id="logout-btn" className="w-full">
-                    <button 
-                      onClick={() => signOut()} 
-                      className="w-full text-left font-medium text-rose-400 hover:text-rose-300 px-3 py-2 rounded-lg transition-colors hover:bg-rose-950/30"
-                    >
-                      Logout
-                    </button>
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown.Portal>
+                  {user.email}
+                  <span className="ml-2 bg-blue-900 text-blue-300 px-1.5 py-0.5
+                                   rounded text-xs capitalize">
+                    {role}
+                  </span>
+                </DropdownItem>
+                <DropdownItem
+                  key="profile"
+                  className="text-slate-300 hover:bg-slate-700 rounded-lg px-3 py-2"
+                  as={Link}
+                  href="/dashboard/profile"
+                >
+                  👤 My Profile
+                </DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  className="text-red-400 hover:bg-red-900/30 rounded-lg px-3 py-2"
+                  onPress={logout}
+                >
+                  🚪 Logout
+                </DropdownItem>
+              </DropdownMenu>
             </Dropdown>
+
           ) : (
-            /* Logged Out State: Render Direct Action Authentication Buttons */
-            <div className="hidden sm:flex items-center gap-3">
-              <Link href="/login">
-                <Button size="sm" variant="ghost" className="text-slate-200 hover:text-white border-slate-700">
-                  Login
-                </Button>
+            /* Auth: not logged in */
+            <div className="hidden md:flex items-center gap-2">
+              <Link
+                href="/login"
+                className="text-slate-300 hover:text-white text-sm
+                           px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Login
               </Link>
-              <Link href="/register">
-                <Button size="sm" className="bg-accent text-white font-medium shadow-md shadow-accent/20 hover:bg-blue-600 transition-all">
-                  Register
-                </Button>
+              <Link
+                href="/register"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm
+                           font-semibold px-4 py-2 rounded-lg transition-colors"
+              >
+                Register
               </Link>
             </div>
           )}
 
-          {/* Mobile Hamburger Layout Toggle Button */}
-          <button 
-            className="block md:hidden text-slate-300 hover:text-white transition-colors focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-expanded={isMenuOpen}
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700
+                       text-slate-300 transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
           >
-            <span className="sr-only">Open main menu</span>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            <div className="w-5 h-4 flex flex-col justify-between">
+              <span className={`block h-0.5 bg-current transition-all duration-300
+                ${menuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
+              <span className={`block h-0.5 bg-current transition-all duration-300
+                ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-0.5 bg-current transition-all duration-300
+                ${menuOpen ? "-rotate-45 -translate-y-2.5" : ""}`} />
+            </div>
           </button>
         </div>
       </div>
 
-      {/* ── Mobile Sidebar Drawer Menu Dropdown ── */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-navy-800 bg-navy-900/95 backdrop-blur-lg px-4 py-3 space-y-2 animate-in slide-in-from-top duration-200">
-          <Link 
-            href="/" 
-            onClick={() => setIsMenuOpen(false)}
-            className={`block rounded-lg px-3 py-2 text-base font-medium ${
-              isActive("/") ? "bg-navy-800 text-accent" : "text-slate-300 hover:bg-navy-800"
-            }`}
-          >
-            Home
-          </Link>
-          <Link 
-            href="/tickets" 
-            onClick={() => setIsMenuOpen(false)}
-            className={`block rounded-lg px-3 py-2 text-base font-medium ${
-              isActive("/tickets") ? "bg-navy-800 text-accent" : "text-slate-300 hover:bg-navy-800"
-            }`}
-          >
-            All Tickets
-          </Link>
-          <Link 
-            href="/dashboard/profile" 
-            onClick={() => setIsMenuOpen(false)}
-            className={`block rounded-lg px-3 py-2 text-base font-medium ${
-              isActive("/dashboard") ? "bg-navy-800 text-accent" : "text-slate-300 hover:bg-navy-800"
-            }`}
-          >
-            Dashboard
-          </Link>
-
-          {/* Fallback Auth for Mobile View when logged out */}
-          {!session?.user && (
-            <div className="grid grid-cols-2 gap-2 pt-4 border-t border-navy-800 mt-2">
-              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                <Button size="sm" variant="flat" className="w-full bg-navy-800 text-slate-200">
+      {/* ── Mobile menu ─────────────────────────────────────────── */}
+      {menuOpen && (
+        <div className="md:hidden bg-slate-900 border-t border-slate-800 px-4 py-4">
+          <div className="flex flex-col gap-3">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`text-base font-medium py-2 transition-colors ${
+                  pathname === link.href
+                    ? "text-blue-400"
+                    : "text-slate-300 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {!user && (
+              <div className="flex gap-2 pt-2 border-t border-slate-800">
+                <Link href="/login" onClick={() => setMenuOpen(false)}
+                  className="flex-1 text-center text-slate-300 border border-slate-600
+                             py-2 rounded-lg hover:bg-slate-800 transition-colors text-sm">
                   Login
-                </Button>
-              </Link>
-              <Link href="/register" onClick={() => setIsMenuOpen(false)}>
-                <Button size="sm" className="w-full bg-accent text-white">
+                </Link>
+                <Link href="/register" onClick={() => setMenuOpen(false)}
+                  className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white
+                             py-2 rounded-lg transition-colors text-sm font-semibold">
                   Register
-                </Button>
-              </Link>
-            </div>
-          )}
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 }

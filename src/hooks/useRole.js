@@ -1,42 +1,51 @@
-import { useEffect, useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useState, useEffect } from "react";
 import api from "@/lib/axios";
 
 export function useRole() {
-  const { data: session, isPending: sessionLoading } = useSession();
-  
-  const [role, setRole] = useState(null);
-  const [roleLoading, setRoleLoading] = useState(true);
+  const [role,   setRole]   = useState(null);
+  const [user,   setUser]   = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. If BetterAuth is actively resolving, do nothing.
-    if (sessionLoading) return;
+    // Read user from localStorage (set at login/register)
+    const stored = localStorage.getItem("tb_user");
+    const token  = localStorage.getItem("tb_token");
 
-    // 2. Verified session found -> Fetch the role asynchronously
-    if (session?.user?.email) {
-      api
-        .get(`/auth/me?email=${session.user.email}`)
-        .then((res) => {
-          setRole(res.data.role);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch user role:", err);
-          setRole(null);
-        })
-        .finally(() => {
-          setRoleLoading(false);
-        });
-    } else {
-      // 3. No session found. Defer state updates cleanly outside 
-      // of React's active rendering pass to prevent render cascades.
-      queueMicrotask(() => {
-        setRole(null);
-        setRoleLoading(false);
-      });
+    if (!token || !stored) {
+      setLoading(false);
+      return;
     }
-  }, [session, sessionLoading]); // Removed local states from dependencies to prevent cyclic loops
 
-  const combinedLoading = sessionLoading || roleLoading;
+    // Parse stored user for quick render
+    const parsed = JSON.parse(stored);
+    setUser(parsed);
+    setRole(parsed.role);
 
-  return { role, loading: combinedLoading, user: session?.user };
+    // Verify with server to get fresh role (in case admin changed it)
+    api.get("/auth/me")
+      .then((res) => {
+        setRole(res.data.role);
+        setUser(res.data);
+        // Update stored user with fresh data
+        localStorage.setItem("tb_user", JSON.stringify(res.data));
+      })
+      .catch(() => {
+        // Token expired — clear storage
+        localStorage.removeItem("tb_token");
+        localStorage.removeItem("tb_user");
+        setRole(null);
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("tb_token");
+    localStorage.removeItem("tb_user");
+    setRole(null);
+    setUser(null);
+    window.location.href = "/login";
+  };
+
+  return { role, user, loading, logout };
 }
