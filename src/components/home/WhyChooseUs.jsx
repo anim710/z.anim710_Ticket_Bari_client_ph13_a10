@@ -1,28 +1,30 @@
+import { Rocket, ShieldCheck, Display, Ticket } from "@gravity-ui/icons";
+
 const reasons = [
-  { icon: "⚡", title: "Instant Booking", desc: "Confirm your seat in under 60 seconds." },
-  { icon: "🔒", title: "Secure Payments", desc: "Stripe-powered, 100% safe transactions." },
-  { icon: "📱", title: "Mobile Friendly", desc: "Book from anywhere, any device." },
-  { icon: "🎫", title: "All Transport", desc: "Bus, Train, Launch, Plane — all in one." },
+  { Icon: Rocket, title: "Instant Booking", desc: "Confirm your seat in under 60 seconds." },
+  { Icon: ShieldCheck, title: "Secure Payments", desc: "Stripe-powered, 100% safe transactions." },
+  { Icon: Display, title: "Mobile Friendly", desc: "Book from anywhere, on any device." },
+  { Icon: Ticket, title: "All Transport", desc: "Bus, train, launch & plane — all in one." },
 ];
 
 export default function WhyChooseUs() {
   return (
     <section className="max-w-7xl mx-auto px-6 py-16">
-      <h2 className="text-3xl font-bold text-white mb-2 text-center">
-        Why Choose TicketBari?
-      </h2>
-      <p className="text-slate-400 text-center mb-10">
-        We make travel easy, fast, and affordable
-      </p>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold mb-2">Why choose TicketBari?</h2>
+        <p className="text-muted">We make travel easy, fast, and affordable</p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {reasons.map((r) => (
+        {reasons.map(({ Icon, title, desc }) => (
           <div
-            key={r.title}
-            className="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center hover:border-blue-500 transition-all"
+            key={title}
+            className="group bg-surface border border-separator rounded-2xl p-6 text-center hover:border-accent hover:-translate-y-1 transition-all"
           >
-            <div className="text-4xl mb-3">{r.icon}</div>
-            <h3 className="text-white font-bold text-lg mb-2">{r.title}</h3>
-            <p className="text-slate-400 text-sm">{r.desc}</p>
+            <div className="mx-auto mb-4 grid place-items-center w-14 h-14 rounded-2xl bg-accent-soft text-accent-soft-foreground group-hover:scale-110 transition-transform">
+              <Icon className="w-7 h-7" />
+            </div>
+            <h3 className="font-bold text-lg mb-2">{title}</h3>
+            <p className="text-muted text-sm">{desc}</p>
           </div>
         ))}
       </div>

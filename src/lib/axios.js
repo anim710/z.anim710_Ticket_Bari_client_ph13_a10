@@ -1,7 +1,8 @@
 import axios from "axios";
-console.log(process.env.NEXT_PUBLIC_API_URL)
+
+// All server routes are mounted under /api, so include it in the base URL.
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
 });
 
 // Attach JWT token to every request

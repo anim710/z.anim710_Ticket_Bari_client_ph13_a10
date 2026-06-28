@@ -1,17 +1,20 @@
 "use client";
-// 1. FIX: Only import the validated named RouterProvider that exists in the module
-import { RouterProvider } from "@heroui/react"; 
+import { RouterProvider } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export default function Providers({ children }) {
+  const router = useRouter();
+
   return (
     <NextThemesProvider 
       attribute="class" 
       defaultTheme="dark"
       enableSystem={false}
+      disableTransitionOnChange
     >
-      {/* 2. FIX: Use RouterProvider as your root UI engine */}
-      <RouterProvider>
+      {/* Wire react-aria/HeroUI client navigation (e.g. items with `href`) to Next's router */}
+      <RouterProvider navigate={(href) => router.push(href)}>
         {children}
       </RouterProvider>
     </NextThemesProvider>

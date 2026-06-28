@@ -34,9 +34,9 @@ export default function GoogleCallbackPage() {
   }, [session, isPending]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 gap-4">
-      <Spinner size="lg" color="primary" />
-      <p className="text-slate-400">Completing Google login...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground gap-4">
+      <Spinner size="lg" />
+      <p className="text-muted">Completing Google login...</p>
     </div>
   );
 }

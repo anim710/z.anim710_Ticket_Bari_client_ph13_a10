@@ -1,35 +1,59 @@
 @import "tailwindcss";
 
-/* ── HeroUI Native v4 Style Import ───────────────────────── */
+/* ── HeroUI v3 styles (provides semantic color tokens + dark variant) ── */
 @import "@heroui/styles";
 
-/* ── Custom color tokens ───────────────────────────────── */
+/* ── Project tokens ────────────────────────────────────────── */
+/* Brand colors are intentionally constant across light/dark (logo/gradients).
+   Everything else uses HeroUI's themed semantic tokens so the toggle works. */
 @theme {
-  --color-navy-900: #0F172A;
-  --color-navy-800: #1E293B;
-  --color-navy-700: #1E3A5F;
-  --color-accent:   #3B82F6;
+  --color-brand: #3b82f6;
+  --color-brand-2: #6366f1;
 
   --font-sans: "Inter", "Arial", sans-serif;
 }
 
-/* ── Dark mode ─────────────────────────────────────────── */
-@variant dark (&:where(.dark, .dark *));
-
-/* ── Base styles ───────────────────────────────────────── */
+/* ── Base styles ───────────────────────────────────────────── */
 @layer base {
   * {
-    scroll-behavior: smooth;
     box-sizing: border-box;
   }
 
-  body {
-    background-color: #0F172A;
-    color: #F1F5F9;
+  html {
+    scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #1E293B; }
-  ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 3px; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Themed scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+  }
+}
+
+/* ── Reusable utilities ────────────────────────────────────── */
+@layer utilities {
+  .brand-gradient {
+    background-image: linear-gradient(135deg, var(--color-brand), var(--color-brand-2));
+  }
+  .brand-text {
+    background-image: linear-gradient(135deg, var(--color-brand), var(--color-brand-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
