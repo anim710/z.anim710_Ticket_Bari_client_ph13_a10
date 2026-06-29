@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useRole } from "@/hooks/useRole";
@@ -30,14 +31,21 @@ export default function AppNavbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
         {/* ── Logo ───────────────────────────────────────────── */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="grid place-items-center w-9 h-9 rounded-xl brand-gradient text-white shadow-lg shadow-brand/30">
-            <Ticket className="w-5 h-5" />
-          </span>
-          <span className="font-bold text-xl tracking-tight">
-            Ticket<span className="brand-text">Bari</span>
-          </span>
-        </Link>
+             <Link href="/" className="flex items-center gap-2 shrink-0">
+                {/* Custom Image Logo with corrected aspect ratio */}
+                <img
+                  src="/ticketbari-r.png"
+                  alt="TicketBari Logo"
+                  height={36}
+                  width={72} // Increased width to give the image breathing room
+                  className="h-7 w-auto object-contain" // Locks height nicely with text, lets width scale naturally
+                />
+                
+                {/* Your original text branding */}
+                <span className="font-bold text-xl tracking-tight">
+                  Ticket<span className="brand-text">Bari</span>
+                </span>
+              </Link>
 
         {/* ── Desktop nav links ───────────────────────────────── */}
         <div className="hidden md:flex items-center gap-1">
