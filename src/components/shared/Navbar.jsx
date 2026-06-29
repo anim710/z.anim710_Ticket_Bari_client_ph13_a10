@@ -38,7 +38,7 @@ export default function AppNavbar() {
                   alt="TicketBari Logo"
                   height={36}
                   width={72} // Increased width to give the image breathing room
-                  className="h-7 w-auto object-contain" // Locks height nicely with text, lets width scale naturally
+                  className="h-11 w-auto object-contain" // Locks height nicely with text, lets width scale naturally
                 />
                 
                 {/* Your original text branding */}

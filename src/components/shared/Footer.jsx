@@ -6,19 +6,25 @@ export default function Footer() {
     <footer className="bg-surface border-t border-separator mt-20">
       <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Column 1: Logo */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="grid place-items-center w-8 h-8 rounded-lg brand-gradient text-white">
-              <Ticket className="w-4 h-4" />
-            </span>
-            <span className="font-bold text-lg">
-              Ticket<span className="brand-text">Bari</span>
-            </span>
-          </div>
-          <p className="text-muted text-sm leading-relaxed">
-            Book bus, train, launch and flight tickets across Bangladesh — fast, secure, and reliable.
-          </p>
-        </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      {/* Custom Image Logo replaces the old smaller icon wrapper */}
+                      <img
+                        src="/ticketbari-r.png"
+                        alt="TicketBari Logo"
+                        height={28}
+                        width={56} 
+                        className="h-10 w-auto object-contain" // Fluid width so it retains its natural shape
+                      />
+                      
+                      <span className="font-bold text-lg">
+                        Ticket<span className="brand-text">Bari</span>
+                      </span>
+                    </div>
+                    <p className="text-muted text-sm leading-relaxed">
+                      Book bus, train, launch and flight tickets across Bangladesh — fast, secure, and reliable.
+                    </p>
+                  </div>
 
         {/* Column 2: Quick Links */}
         <div>
