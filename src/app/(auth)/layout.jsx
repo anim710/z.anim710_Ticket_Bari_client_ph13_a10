@@ -16,9 +16,14 @@ export default function AuthLayout({ children }) {
         <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-black/10 blur-2xl" />
 
         <Link href="/" className="relative flex items-center gap-2">
-          <span className="grid place-items-center w-10 h-10 rounded-xl bg-white/15 backdrop-blur">
-            <Ticket className="w-5 h-5" />
-          </span>
+          {/* Custom Image Logo with proportions balanced for larger text */}
+          <img
+            src="/ticketbari-r.png"
+            alt="TicketBari Logo"
+            height={32}
+            width={64}
+            className="h-8 w-auto object-contain" // Scaled to h-8 to perfectly balance with text-2xl
+          />
           <span className="font-bold text-2xl">TicketBari</span>
         </Link>
 
