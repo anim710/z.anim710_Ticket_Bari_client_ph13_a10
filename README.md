@@ -1,15 +1,19 @@
 # TicketBari
+# TicketBari
 
 An online ticket booking platform for bus, train, launch, and flight tickets across Bangladesh.
 
+## Live URL
 ## Live URL
 
 [https://ticketbari.vercel.app](https://z-anim710-ticket-bari-client-ph13-git-a31a75-anim710s-projects.vercel.app/)
 
 ## Purpose
+## Purpose
 
 TicketBari allows users to discover and book travel tickets across Bangladesh. Vendors can list tickets for approval, and admins manage the entire platform including user roles, ticket verification, and advertisements.
 
+## User Roles
 ## User Roles
 
 | Role | Access |
@@ -18,6 +22,7 @@ TicketBari allows users to discover and book travel tickets across Bangladesh. V
 | Vendor | Add/manage tickets, accept/reject bookings, view revenue |
 | Admin | Approve/reject tickets, manage users, advertise tickets |
 
+## Key Features
 ## Key Features
 
 - Email/password authentication with JWT
@@ -31,17 +36,32 @@ TicketBari allows users to discover and book travel tickets across Bangladesh. V
 - Admin fraud detection — hides all vendor tickets on fraud mark
 - Dark / Light mode toggle
 - Fully responsive — mobile, tablet, desktop
+- Email/password authentication with JWT
+- Google OAuth login via BetterAuth
+- Browse tickets with search, filter, sort, and pagination (9 per page)
+- Real-time departure countdown timer on ticket details
+- Booking flow: pending → accepted → pay → paid
+- Stripe payment integration
+- ImgBB image upload for vendor ticket images
+- Vendor revenue overview with charts
+- Admin fraud detection — hides all vendor tickets on fraud mark
+- Dark / Light mode toggle
+- Fully responsive — mobile, tablet, desktop
 
+## NPM Packages Used
 ## NPM Packages Used
 
 ### Client
+
 
 - `next` — React framework with App Router
 - `react` — UI library
 - `@heroui/react` — UI component library (v3)
 - `@heroui/styles` — HeroUI CSS-first design tokens (pulled in by `@heroui/react`; imported in `globals.css`)
+- `@heroui/styles` — HeroUI CSS-first design tokens (pulled in by `@heroui/react`; imported in `globals.css`)
 - `tailwindcss` — Utility-first CSS (v4)
 - `@tailwindcss/postcss` — Tailwind v4 PostCSS plugin
+- `framer-motion` — Animation library
 - `framer-motion` — Animation library
 - `better-auth` — Google OAuth authentication
 - `axios` — HTTP client for API calls
@@ -50,10 +70,13 @@ TicketBari allows users to discover and book travel tickets across Bangladesh. V
 - `swiper` — Touch slider for hero banner
 - `@gravity-ui/icons` — Icon library
 - `next-themes` — Dark/light mode management (`class` attribute on `<html>`)
+- `next-themes` — Dark/light mode management (`class` attribute on `<html>`)
 - `recharts` — Charts for vendor revenue page
+- `typescript` — TypeScript tooling
 - `typescript` — TypeScript tooling
 
 ### Server
+
 
 - `express` — Web framework
 - `cors` — Cross-origin resource sharing
@@ -66,10 +89,13 @@ TicketBari allows users to discover and book travel tickets across Bangladesh. V
 - `nodemon` — Auto-restart for development
 
 ## Run Locally
+## Run Locally
 
 ### Server
 
+
 ```bash
+cd ticketbari_server
 cd ticketbari_server
 npm install
 # Fill in .env with your credentials
@@ -79,13 +105,17 @@ npm run dev
 
 ### Client
 
+
 ```bash
 cd ticketbari_client
+cd ticketbari_client
 npm install
+# Fill in .env with your credentials
 # Fill in .env with your credentials
 npm run dev
 ```
 
+## Environment Variables
 ## Environment Variables
 
 ### Server `.env`
