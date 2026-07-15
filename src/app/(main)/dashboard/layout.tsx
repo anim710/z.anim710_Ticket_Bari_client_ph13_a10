@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import React, { SVGProps, useEffect } from "react";
 import {
   Person,
   Receipt,
@@ -21,7 +21,23 @@ import { useRole } from "@/hooks/useRole";
 
 const PROFILE_LINK = { label: "Profile", href: "/dashboard/profile", Icon: Person };
 
-const linksByRole = {
+const linksByRole: {
+    user: {
+        label: string;
+        href: string;
+        Icon: (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
+    }[];
+    vendor: {
+        label: string;
+        href: string;
+        Icon: (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
+    }[];
+    admin: {
+        label: string;
+        href: string;
+        Icon: (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
+    }[];
+} = {
   user: [
     PROFILE_LINK,
     { label: "My Booked Tickets", href: "/dashboard/my-booked-tickets", Icon: Receipt },
@@ -43,7 +59,7 @@ const linksByRole = {
   ],
 };
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, role, loading, logout } = useRole();

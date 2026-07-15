@@ -1,6 +1,11 @@
 import { Rocket, ShieldCheck, Display, Ticket } from "@gravity-ui/icons";
+import { SVGProps } from "react";
 
-const reasons = [
+const reasons: {
+    Icon: (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
+    title: string;
+    desc: string;
+}[] = [
   { Icon: Rocket, title: "Instant Booking", desc: "Confirm your seat in under 60 seconds." },
   { Icon: ShieldCheck, title: "Secure Payments", desc: "Stripe-powered, 100% safe transactions." },
   { Icon: Display, title: "Mobile Friendly", desc: "Book from anywhere, on any device." },

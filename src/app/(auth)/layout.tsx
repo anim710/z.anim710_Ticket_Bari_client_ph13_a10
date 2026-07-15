@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Ticket, CircleCheck } from "@gravity-ui/icons";
+import React from "react";
 
 const highlights = [
   "Book bus, train, launch & flight tickets",
@@ -7,7 +8,7 @@ const highlights = [
   "Manage every booking from one dashboard",
 ];
 
-export default function AuthLayout({ children }) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background text-foreground">
       {/* ── Brand panel ─────────────────────────────────────── */}

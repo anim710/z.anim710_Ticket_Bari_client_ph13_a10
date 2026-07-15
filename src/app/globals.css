@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── HeroUI v3 styles (provides semantic color tokens + dark variant) ── */
+/* ── HeroUI v3 styles (CSS-first tokens; replaces @heroui/theme plugin) ── */
 @import "@heroui/styles";
 
 /* ── Project tokens ────────────────────────────────────────── */
@@ -11,6 +11,20 @@
   --color-brand-2: #6366f1;
 
   --font-sans: "Inter", "Arial", sans-serif;
+}
+
+/* Map brand into HeroUI accent so Button/Chip primary styles follow the brand */
+:root,
+.light,
+[data-theme="light"] {
+  --accent: var(--color-brand);
+  --accent-foreground: #ffffff;
+}
+
+.dark,
+[data-theme="dark"] {
+  --accent: var(--color-brand);
+  --accent-foreground: #ffffff;
 }
 
 /* ── Base styles ───────────────────────────────────────────── */
