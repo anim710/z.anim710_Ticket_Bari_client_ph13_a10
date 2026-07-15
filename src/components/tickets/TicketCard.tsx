@@ -2,8 +2,10 @@
 import { useRouter } from "next/navigation";
 import { ArrowRight, MapPin } from "@gravity-ui/icons";
 import { Card, Button, Chip } from "@heroui/react";
+import { Ticket } from "@/app/types/ticket";
 
-export default function TicketCard({ ticket }) {
+export default function TicketCard( {ticket}: { ticket: Ticket } )  {
+  
   const router = useRouter();
   return (
     <Card className="group bg-surface border border-separator hover:border-accent transition-all h-full rounded-2xl overflow-hidden flex flex-col">

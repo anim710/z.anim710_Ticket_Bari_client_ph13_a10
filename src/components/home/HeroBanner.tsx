@@ -8,7 +8,11 @@ import { Button } from "@heroui/react";
 import { ArrowRight, Magnifier } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
 
-const slides = [
+const slides: {
+ title: string;
+ subtitle: string;
+ bg: string;
+}[] = [
   {
     title: "Travel Bangladesh in Comfort",
     subtitle: "Book bus, train, launch & flight tickets — all in one place.",

@@ -1,14 +1,22 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useRole } from "@/hooks/useRole";
 import { Sun, Moon, Person, ArrowRightToSquare } from "@gravity-ui/icons";
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export default function AppNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
   const { user, role, logout } = useRole();
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
@@ -20,9 +28,6 @@ export default function AppNavbar() {
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev);
   const closeDropdown = () => setDropdownOpen(false);
-
-  // Avoid hydration mismatch with theme
-  useEffect(() => setMounted(true), []);
 
   // 1. Close custom dropdown when clicking anywhere outside
   useEffect(() => {

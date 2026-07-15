@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, Button, Chip, Spinner, Input } from "@heroui/react";
-import { ArrowLeft, MapPin, Calendar, Person, CircleCheck } from "@gravity-ui/icons";
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  Person,
+  CircleCheck,
+} from "@gravity-ui/icons";
 import api from "@/lib/axios";
 
 function formatDate(value) {
@@ -27,7 +33,7 @@ export default function TicketDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState<number>(1);
   const [booking, setBooking] = useState(false);
   const [message, setMessage] = useState(null); // { type: "success" | "error", text }
 
@@ -50,7 +56,10 @@ export default function TicketDetailsPage() {
       return;
     }
     const user = JSON.parse(stored);
-    const quantity = Math.max(1, Math.min(Number(qty) || 1, ticket.quantity || 1));
+    const quantity = Math.max(
+      1,
+      Math.min(Number(qty) || 1, ticket.quantity || 1),
+    );
 
     setBooking(true);
     try {
@@ -76,7 +85,8 @@ export default function TicketDetailsPage() {
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Booking failed. Please try again.",
+        text:
+          err.response?.data?.message || "Booking failed. Please try again.",
       });
     } finally {
       setBooking(false);
@@ -95,7 +105,11 @@ export default function TicketDetailsPage() {
     return (
       <div className="text-center py-32">
         <p className="text-muted mb-4">Ticket not found.</p>
-        <Button onPress={() => router.push("/tickets")} variant="primary" className="brand-gradient text-white">
+        <Button
+          onPress={() => router.push("/tickets")}
+          variant="primary"
+          className="brand-gradient text-white"
+        >
           Back to all tickets
         </Button>
       </div>
@@ -103,7 +117,10 @@ export default function TicketDetailsPage() {
   }
 
   const soldOut = !ticket.quantity || ticket.quantity <= 0;
-  const quantity = Math.max(1, Math.min(Number(qty) || 1, ticket.quantity || 1));
+  const quantity = Math.max(
+    1,
+    Math.min(Number(qty) || 1, ticket.quantity || 1),
+  );
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-10">
@@ -118,22 +135,48 @@ export default function TicketDetailsPage() {
         {/* ── Left: image + info ──────────────────────────────── */}
         <div className="lg:col-span-3 space-y-6">
           <div className="relative rounded-2xl overflow-hidden border border-separator">
-            <img src={ticket.image} alt={ticket.title} className="w-full h-72 md:h-96 object-cover" />
+            <img
+              src={ticket.image}
+              alt={ticket.title}
+              className="w-full h-72 md:h-96 object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
-              <Chip size="sm" variant="primary" className="brand-gradient text-white border-0 mb-2">
+              <Chip
+                size="sm"
+                variant="primary"
+                className="brand-gradient text-white border-0 mb-2"
+              >
                 {ticket.transportType}
               </Chip>
-              <h1 className="text-2xl md:text-3xl font-bold text-white">{ticket.title}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">
+                {ticket.title}
+              </h1>
             </div>
           </div>
 
           <Card className="bg-surface border border-separator">
             <Card.Content className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Info icon={MapPin} label="Route" value={`${ticket.from} → ${ticket.to}`} />
-              <Info icon={Calendar} label="Departure" value={formatDate(ticket.departureDate)} />
-              <Info icon={Person} label="Operator" value={ticket.vendorName || "TicketBari Partner"} />
-              <Info icon={CircleCheck} label="Seats available" value={ticket.quantity ?? 0} />
+              <Info
+                icon={MapPin}
+                label="Route"
+                value={`${ticket.from} → ${ticket.to}`}
+              />
+              <Info
+                icon={Calendar}
+                label="Departure"
+                value={formatDate(ticket.departureDate)}
+              />
+              <Info
+                icon={Person}
+                label="Operator"
+                value={ticket.vendorName || "TicketBari Partner"}
+              />
+              <Info
+                icon={CircleCheck}
+                label="Seats available"
+                value={ticket.quantity ?? 0}
+              />
             </Card.Content>
           </Card>
 
@@ -159,7 +202,9 @@ export default function TicketDetailsPage() {
           <Card className="bg-surface border border-separator lg:sticky lg:top-24">
             <Card.Content className="p-6">
               <p className="text-muted text-sm">Price per seat</p>
-              <p className="text-4xl font-bold text-accent mb-1">৳{ticket.price}</p>
+              <p className="text-4xl font-bold text-accent mb-1">
+                ৳{ticket.price}
+              </p>
 
               {message && (
                 <div
@@ -179,17 +224,24 @@ export default function TicketDetailsPage() {
                 </div>
               ) : (
                 <div className="mt-5 space-y-4">
-                  <Input
-                    type="number"
-                    label="Seats"
-                    min={1}
-                    max={ticket.quantity}
-                    value={String(qty)}
-                    onChange={(e) => setQty(e.target.value)}
-                  />
+                  <div className="space-y-2">
+                    <label htmlFor="seats">Seats</label>
+
+                    <Input
+                      id="seats"
+                      type="number"
+                      min={1}
+                      max={ticket.quantity}
+                      value={String(qty)}
+                      onChange={(e) => setQty(Number(e.target.value))}
+                    />
+                  </div>
+
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted">Total</span>
-                    <span className="font-bold text-lg">৳{ticket.price * quantity}</span>
+                    <span className="font-bold text-lg">
+                      ৳{ticket.price * quantity}
+                    </span>
                   </div>
                   <Button
                     variant="primary"

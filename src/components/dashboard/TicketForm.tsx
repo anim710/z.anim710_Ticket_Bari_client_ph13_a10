@@ -22,11 +22,11 @@ function toInputDateTime(value) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-export default function TicketForm({
-  initial,
-  user,
-  onSubmit,
-  submitLabel = "Add Ticket",
+export default function TicketForm({ initial, user, onSubmit, submitLabel="Add Ticket", }: {
+    initial?: any;
+    user: any;
+    onSubmit: any;
+    submitLabel?: string;
 }) {
   const [form, setForm] = useState({
     title: initial?.title || "",
@@ -110,13 +110,12 @@ export default function TicketForm({
     }
   };
 
-  // Explicit label styling for high visibility
-  const labelCls = "text-sm font-medium text-slate-700 mb-1.5 block dark:text-white";
+  const labelCls = "text-sm font-medium text-foreground mb-1.5 block";
   const selectCls =
-    "bg-slate-50 text-slate-900  dark:text-slate-700 border border-slate-200 hover:border-slate-300 rounded-xl px-3 h-[40px] text-sm focus:outline-none focus:ring-2 focus:ring-primary w-full transition-all cursor-pointer shadow-sm";
+    "bg-field text-foreground border border-separator hover:border-accent rounded-xl px-3 h-[40px] text-sm focus:outline-none focus:ring-2 focus:ring-accent w-full transition-all cursor-pointer shadow-sm";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 max-w-4xl mx-auto p-6 bg-white dark:bg-[#0d0e12] rounded-2xl border border-slate-100 shadow-sm">
+    <form onSubmit={handleSubmit} className="space-y-5 max-w-4xl mx-auto p-6 bg-surface rounded-2xl border border-separator shadow-sm">
       
       {/* ── Transport Name Row ─────────────────────────────── */}
       <div className="flex flex-col">
@@ -125,8 +124,7 @@ export default function TicketForm({
           value={form.title}
           onChange={set("title")}
           placeholder="Dhaka to Cox's Bazar Express"
-          variant="bordered"
-          size="sm"
+          variant="secondary"
         />
       </div>
 
@@ -138,8 +136,7 @@ export default function TicketForm({
             value={form.from}
             onChange={set("from")}
             placeholder="Dhaka"
-            variant="bordered"
-            size="sm"
+            variant="secondary"
           />
         </div>
         <div className="flex flex-col">
@@ -148,8 +145,7 @@ export default function TicketForm({
             value={form.to}
             onChange={set("to")}
             placeholder="Cox's Bazar"
-            variant="bordered"
-            size="sm"
+            variant="secondary"
           />
         </div>
       </div>
@@ -181,8 +177,7 @@ export default function TicketForm({
             value={String(form.price)}
             onChange={set("price")}
             placeholder="1200"
-            variant="bordered"
-            size="sm"
+            variant="secondary"
           />
         </div>
 
@@ -195,8 +190,7 @@ export default function TicketForm({
             value={String(form.quantity)}
             onChange={set("quantity")}
             placeholder="40"
-            variant="bordered"
-            size="sm"
+            variant="secondary"
           />
         </div>
       </div>
@@ -208,7 +202,7 @@ export default function TicketForm({
           type="datetime-local"
           value={form.departureDate}
           onChange={set("departureDate")}
-          className="bg-slate-50 text-slate-900 border border-slate-200 hover:border-slate-300 rounded-xl px-3 h-[40px] text-sm focus:outline-none focus:ring-2 focus:ring-primary w-full transition-all shadow-sm"
+          className="bg-field text-foreground border border-separator hover:border-accent rounded-xl px-3 h-[40px] text-sm focus:outline-none focus:ring-2 focus:ring-accent w-full transition-all shadow-sm"
         />
       </div>
 
@@ -225,8 +219,8 @@ export default function TicketForm({
                 onClick={() => togglePerk(perk)}
                 className={`text-xs px-4 py-2 rounded-full border transition-colors ${
                   active
-                    ? "bg-primary text-white border-primary font-medium"
-                    : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    ? "bg-accent text-accent-foreground border-accent font-medium"
+                    : "bg-field text-muted border-separator hover:bg-surface-secondary"
                 }`}
               >
                 {perk}
@@ -243,10 +237,10 @@ export default function TicketForm({
           type="file"
           accept="image/*"
           onChange={handleImage}
-          className="text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:px-4 file:py-2 file:text-xs file:font-medium file:cursor-pointer hover:file:bg-slate-200 transition-all"
+          className="text-sm text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-accent-soft file:text-foreground file:px-4 file:py-2 file:text-xs file:font-medium file:cursor-pointer hover:file:bg-surface-secondary transition-all"
         />
         {uploading && (
-          <span className="text-xs text-slate-400 animate-pulse mt-1">
+          <span className="text-xs text-muted animate-pulse mt-1">
             Uploading image…
           </span>
         )}
@@ -254,7 +248,7 @@ export default function TicketForm({
           <img
             src={imageUrl}
             alt="preview"
-            className="mt-2 w-40 h-24 object-cover rounded-xl border border-slate-200 shadow-sm"
+            className="mt-2 w-40 h-24 object-cover rounded-xl border border-separator shadow-sm"
           />
         )}
       </div>
@@ -266,9 +260,8 @@ export default function TicketForm({
           <Input
             value={user?.name || ""}
             readOnly
-            isDisabled
-            variant="flat"
-            size="sm"
+            disabled
+            variant="secondary"
           />
         </div>
         <div className="flex flex-col">
@@ -276,16 +269,15 @@ export default function TicketForm({
           <Input
             value={user?.email || ""}
             readOnly
-            isDisabled
-            variant="flat"
-            size="sm"
+            disabled
+            variant="secondary"
           />
         </div>
       </div>
 
       {/* ── Error Output Box ────────────────────────────────── */}
       {error && (
-        <div className="rounded-xl px-4 py-3 text-sm bg-red-50 text-red-600 border border-red-200">
+        <div className="rounded-xl px-4 py-3 text-sm bg-danger-soft text-danger border border-danger/30">
           {error}
         </div>
       )}

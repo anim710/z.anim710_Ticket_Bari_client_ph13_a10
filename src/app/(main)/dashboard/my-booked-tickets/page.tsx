@@ -65,7 +65,7 @@ export default function MyBookedTicketsPage() {
         bookingId: booking._id,
       });
       if (res.data?.url) {
-        window.location.href = res.data.url;
+        window.location.assign(res.data.url);
       } else {
         throw new Error("No checkout URL returned");
       }

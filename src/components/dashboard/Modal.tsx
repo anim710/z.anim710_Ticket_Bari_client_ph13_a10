@@ -2,7 +2,14 @@
 import { useEffect } from "react";
 import { Xmark } from "@gravity-ui/icons";
 
-export default function Modal({ open, onClose, title, children, footer, size = "md" }) {
+export default function Modal({ open, onClose, title, children, footer, size }: {
+    open: any;
+    onClose: any;
+    title?: any;
+    children?: any;
+    footer?: any;
+    size?: string;
+}) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => e.key === "Escape" && onClose?.();

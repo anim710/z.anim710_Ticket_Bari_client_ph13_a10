@@ -4,6 +4,7 @@ import { Input, Button } from "@heroui/react";
 import { Magnifier } from "@gravity-ui/icons";
 import api from "@/lib/axios";
 import TicketCard from "@/components/tickets/TicketCard";
+import { Tickets } from "@/app/types/ticket";
 
 const TRANSPORT_TYPES = ["", "Bus", "Train", "Launch", "Plane"];
 
@@ -21,8 +22,13 @@ function CardSkeleton() {
 }
 
 export default function AllTicketsPage() {
-  const [filters, setFilters] = useState({ from: "", to: "", type: "", sort: "" });
-  const [tickets, setTickets] = useState([]);
+  const [filters, setFilters] = useState({
+    from: "",
+    to: "",
+    type: "",
+    sort: "",
+  });
+  const [tickets, setTickets] = useState<Tickets>([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [total, setTotal] = useState(0);
@@ -51,11 +57,11 @@ export default function AllTicketsPage() {
         setLoading(false);
       }
     },
-    [filters]
+    [filters],
   );
 
   useEffect(() => {
-    fetchTickets(1);
+    void Promise.resolve().then(() => fetchTickets(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -74,7 +80,9 @@ export default function AllTicketsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">All tickets</h1>
         <p className="text-muted">
-          {total > 0 ? `${total} routes available` : "Search bus, train, launch & flight tickets"}
+          {total > 0
+            ? `${total} routes available`
+            : "Search bus, train, launch & flight tickets"}
         </p>
       </div>
 
@@ -83,18 +91,29 @@ export default function AllTicketsPage() {
         onSubmit={handleSearch}
         className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-surface border border-separator rounded-2xl p-4 mb-10"
       >
-        <Input
-          label="From"
-          placeholder="Dhaka"
-          value={filters.from}
-          onChange={(e) => setFilters({ ...filters, from: e.target.value })}
-        />
-        <Input
-          label="To"
-          placeholder="Chittagong"
-          value={filters.to}
-          onChange={(e) => setFilters({ ...filters, to: e.target.value })}
-        />
+        <div className="flex flex-col gap-1">
+          <label htmlFor="from" className="text-xs text-muted">
+            From
+          </label>
+
+          <Input
+            id="from"
+            placeholder="Dhaka"
+            value={filters.from}
+            onChange={(e) => setFilters({ ...filters, from: e.target.value })}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="to" className="text-xs text-muted">
+            To
+          </label>
+          <Input
+            id="to"
+            placeholder="Chittagong"
+            value={filters.to}
+            onChange={(e) => setFilters({ ...filters, to: e.target.value })}
+          />
+        </div>
 
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted">Type</label>
@@ -125,7 +144,11 @@ export default function AllTicketsPage() {
         </div>
 
         <div className="flex items-end gap-2">
-          <Button type="submit" variant="primary" className="flex-1 brand-gradient text-white font-semibold">
+          <Button
+            type="submit"
+            variant="primary"
+            className="flex-1 brand-gradient text-white font-semibold"
+          >
             <Magnifier className="w-4 h-4" /> Search
           </Button>
           <Button type="button" variant="outline" onPress={resetFilters}>
@@ -156,7 +179,11 @@ export default function AllTicketsPage() {
           {/* ── Pagination ───────────────────────────────────────── */}
           {pages > 1 && (
             <div className="flex flex-wrap items-center justify-center gap-2 mt-12">
-              <Button variant="outline" isDisabled={page <= 1} onPress={() => fetchTickets(page - 1)}>
+              <Button
+                variant="outline"
+                isDisabled={page <= 1}
+                onPress={() => fetchTickets(page - 1)}
+              >
                 Prev
               </Button>
               {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
@@ -169,7 +196,11 @@ export default function AllTicketsPage() {
                   {p}
                 </Button>
               ))}
-              <Button variant="outline" isDisabled={page >= pages} onPress={() => fetchTickets(page + 1)}>
+              <Button
+                variant="outline"
+                isDisabled={page >= pages}
+                onPress={() => fetchTickets(page + 1)}
+              >
                 Next
               </Button>
             </div>
