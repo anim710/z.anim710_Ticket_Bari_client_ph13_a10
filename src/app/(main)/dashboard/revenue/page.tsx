@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Card, Spinner } from "@heroui/react";
 import { Ticket, CircleCheck, TagDollar } from "@gravity-ui/icons";
 import {
@@ -20,14 +20,20 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 
 const COLORS = ["#3b82f6", "#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export default function RevenuePage() {
   const { allowed, loading: roleLoading } = useRequireRole("vendor");
   const [tickets, setTickets] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsClient();
 
   useEffect(() => {
     if (!allowed) return;
@@ -149,7 +155,7 @@ export default function RevenuePage() {
                         cx="50%"
                         cy="50%"
                         outerRadius={90}
-                        label={(d) => `৳${d.revenue}`}
+                        label={({ payload }) => `৳${payload.revenue}`}
                       >
                         {revenueByTicket.map((_, i) => (
                           <Cell key={i} fill={COLORS[i % COLORS.length]} />

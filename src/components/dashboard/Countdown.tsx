@@ -1,21 +1,28 @@
 "use client";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Clock } from "@gravity-ui/icons";
 
-function diff(target) {
-  const ms = new Date(target).getTime() - Date.now();
+function diff(target: unknown) {
+  const ms = new Date(target as string | number | Date).getTime() - Date.now();
   if (Number.isNaN(ms)) return null;
   return ms;
 }
 
-export default function Countdown({ date, className = "" }) {
-  const [ms, setMs] = useState(() => diff(date));
+export default function Countdown({
+  date,
+  className,
+}: {
+  date: unknown;
+  className?: string;
+}): JSX.Element {
+  const [, setTick] = useState(0);
 
   useEffect(() => {
-    setMs(diff(date));
-    const id = setInterval(() => setMs(diff(date)), 1000);
+    const id = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, [date]);
+
+  const ms = diff(date);
 
   if (ms === null) {
     return (
@@ -39,7 +46,7 @@ export default function Countdown({ date, className = "" }) {
   const mins = Math.floor((totalSec % 3600) / 60);
   const secs = totalSec % 60;
 
-  const parts = [];
+  const parts: string[] = [];
   if (days) parts.push(`${days}d`);
   parts.push(`${hours}h`, `${mins}m`, `${secs}s`);
 

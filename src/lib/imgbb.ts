@@ -1,7 +1,12 @@
+type ImgbbUploadResponse = {
+  data?: { url?: string };
+  error?: { message?: string };
+};
+
 // Uploads an image File to imgbb and returns the hosted URL.
 // Uses native fetch (NOT the axios instance) so it doesn't hit our backend
 // base URL or attach the app JWT.
-export async function uploadImage(file) {
+export async function uploadImage(file: File): Promise<string> {
   const key = process.env.NEXT_PUBLIC_IMGBB_KEY;
   if (!key) throw new Error("Image upload is not configured");
   if (!file) throw new Error("No file selected");
@@ -14,7 +19,7 @@ export async function uploadImage(file) {
     body: formData,
   });
 
-  const data = await res.json();
+  const data = (await res.json()) as ImgbbUploadResponse;
   if (!res.ok || !data?.data?.url) {
     throw new Error(data?.error?.message || "Image upload failed");
   }
