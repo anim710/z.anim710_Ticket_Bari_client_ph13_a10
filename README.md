@@ -6,7 +6,7 @@ An online ticket booking platform for bus, train, launch, and flight tickets acr
 ## Live URL
 ## Live URL
 
-[https://ticketbari.vercel.app](https://z-anim710-ticket-bari-client-ph13-git-a31a75-anim710s-projects.vercel.app/)
+[https://ticketbari.vercel.app](https://z-anim710-ticket-bari-client-ph13-a.vercel.app/)
 
 ## Purpose
 ## Purpose
